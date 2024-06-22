@@ -1,0 +1,3 @@
+C:/Users/kakas/CLionProjects/GameTrain/cmake-build-debug/CMakeFiles/GameTrain.dir
+C:/Users/kakas/CLionProjects/GameTrain/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/kakas/CLionProjects/GameTrain/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,6 @@
+# ninja log v5
+4	1193	7407921114054241	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+1194	1729	7407921119318377	GameTrain.exe	673c9ca52d7bbc26
+1	345	7407924770301716	build.ninja	a966f521822c37fe
+3	1058	7407924971990373	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+1059	1629	7407924977583687	GameTrain.exe	673c9ca52d7bbc26

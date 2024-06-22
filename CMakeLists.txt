@@ -3,7 +3,8 @@ project(GameTrain)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(GameTrain main.cpp)
+add_executable(GameTrain main.cpp
+        map.h)
 
 set(SFML_STATIC_LIBRARIES TRUE)
 set(SFML_DIR C:/sfml/lib/cmake/sfml)
