@@ -1,16 +1,18 @@
 #include <SFML/Graphics.hpp>
 using namespace std;
 using namespace sf;
+
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
     Image ilnur_img;
-    ilnur_img.loadFromFile("../images/ilnur.jpg");
+    ilnur_img.loadFromFile("images/ilnur.jpg");
     Texture ilnur_txt;
     ilnur_txt.loadFromImage(ilnur_img);
     Sprite ilnur;
     ilnur.setTexture(ilnur_txt);
-    double speed = 0.5;
+    double speed = 2;
     while (window.isOpen())
     {
         sf::Event event;
