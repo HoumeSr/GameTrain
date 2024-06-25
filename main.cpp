@@ -3,6 +3,21 @@
 using namespace std;
 using namespace sf;
 
+struct Weapon {
+    int damage;
+
+};
+
+class Archer {
+private:
+    struct Equipment {
+
+    };
+public:
+
+};
+
+
 class object{
 private:
     double x_;
@@ -167,4 +182,4 @@ int main()
 
     return 0;
 }
-//Ïèñþí
+//ï¿½ï¿½ï¿½ï¿½ï¿½
