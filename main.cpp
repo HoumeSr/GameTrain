@@ -20,8 +20,6 @@ public:
         sprite_.setPosition(x, y);
         x_ = x;
         y_ = y;
-//        w_ = w;
-//        h_ = h;
         //Also we can change type of sprite(texture) based on type of img;
     }
     void update(double speed, double time, vector<int> direction){ // direction[0] - 0/1/-1 - direction of opbject by Ox?. Same for direction[1];
@@ -39,61 +37,43 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Catch the Hilter");
     sf::RenderWindow window_clone(sf::VideoMode(1000, 1000), "Catch the Hilter 2 player");
     object ilnur(0, 0, "images/ilnur.jpg");
-    object cat(5, 5, "images/cat_s.png");
-    object mouse(5, 5, "images/mouse_s.png");
+    object cat(0, 0, "images/cat_s.png");
+    object mouse(0, 0, "images/mouse_s.png");
     Clock clock;
     double speed = 0.5;
     View view, view_clone;
-    vector<string> map = createMap(200, 4200);
+    int map_w = 200, map_h = 200,  tile_w = 64, tile_h = 64;
+    vector<string> map = createMap(map_w, map_h);
 
     sf::RenderTexture renderTexture;
-    renderTexture.create(200 * 5, 200 * 5);
-    Texture map_t;
-    map_t.loadFromFile("images/map1.jpg");
-    sf::Sprite tile;
-    tile.setTexture(map_t);
-
-    for (int i = 0; i < 200; i++) {
-        for (int j = 0; j < 200; j++) {
-            switch (map[i][j]) {
-                case ' ':
-                    tile.setTextureRect(IntRect(10, 0, 5, 5));
-                    break;
-                case 'W':
-                    tile.setTextureRect(IntRect(5, 0, 5, 5));
-                    break;
-                case 'w':
-                    tile.setTextureRect(IntRect(5, 5, 5, -5));
-                    break;
-                case 'H':
-                    tile.setTextureRect(IntRect(5, 0, 5, 5));
-                    tile.rotate(-90);
-                    break;
-                case 'h':
-                    tile.setTextureRect(IntRect(5, 0, 5, 5));
-                    tile.rotate(90);
-                    break;
-                case 'j':
-                    tile.setTextureRect(IntRect(15, 0, 5, 5));
-                    break;
-                case 'Q':
-                    tile.setTextureRect(IntRect(0, 0, 5, 5));
-                    break;
-                case 'q':
-                    tile.setTextureRect(IntRect(0, 0, 5, 5));
-                    tile.rotate(90);
-                    break;
-                case 'G':
-                    tile.setTextureRect(IntRect(0, 0, 5, 5));
-                    tile.rotate(-90);
-                    break;
-                case 'g':
-                    tile.setTextureRect(IntRect(0, 0, 5, 5));
-                    tile.rotate(180);
-                    break;
+    renderTexture.create(map_w * tile_w, map_h * tile_w);
+    Texture map_wall, map_oth;
+    map_wall.loadFromFile("images/Wall.png");
+    map_oth.loadFromFile("images/floor_and_obj.png");
+    sf::Sprite tile_wall, tile_oth;
+    tile_wall.setTexture(map_wall);
+    tile_oth.setTexture(map_oth);
+    view.setSize(400,400);
+    view.setCenter(0, 0);
+    view_clone.setSize(400, 400);
+    view_clone.setCenter(0, 0);
+    for (int i = 0; i < map_h; i++) {
+        for (int j = 0; j < map_w; j++) {
+            if(map[i][j] == ' '){
+                tile_oth.setTextureRect(IntRect(0, 0, 64, 64));
+                tile_oth.setPosition(j * tile_w, i * tile_h);
+                renderTexture.draw(tile_oth);
             }
-            tile.setPosition(j * 5, i * 5);
-            renderTexture.draw(tile);
+            else if(map[i][j] == 'j'){
+                tile_oth.setTextureRect(IntRect(64, 0, 64, 64));
+                tile_oth.setPosition(j * tile_w, i * tile_h);
+                renderTexture.draw(tile_oth);
+            }
+            else{
+                tile_wall.setTextureRect(IntRect(0, 0, 64, 64));
+                tile_wall.setPosition(j * tile_w, i * tile_h);
+                renderTexture.draw(tile_wall);
+            }
         }
     }
 
@@ -167,4 +147,3 @@ int main()
 
     return 0;
 }
-//Οθρών

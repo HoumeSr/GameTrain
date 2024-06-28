@@ -25,7 +25,7 @@ std::vector<std::string> createMap(int width, int height) {
                 map[i][j] = 'w';
             }
             else {
-                int randNum = rand() % 5;
+                int randNum = rand() % 52;
                 map[i][j] = (randNum != 0) ? ' ' : 'j';
             }
         }
