@@ -2,35 +2,40 @@
 #include "map.h"
 using namespace std;
 using namespace sf;
-
+//ф
+double fall_speed = 1; // УБРАТЬ ПОТОМ!!!!!!!!!!!
 class object{
 private:
     double x_;
     double y_;
+    double hp_;
     Image image_;
-    struct{
+    struct image_size{
         double x;
         double y;
     } image_size_;
     Texture texture_;
     Sprite sprite_;
-    bool synergy_with_map_rect(vector<vector<int>> rectangles, double speed, double time, vector<int> direction) { // true - right, false - left(unblocked side)
+    bool synergy_with_map_rect(vector<vector<int>> rectangles, double speed, double time, vector<int>& direction) { // true - right, false - left(unblocked side)
         double x = x_ + speed * time * direction[0];
-        double y = y_ + speed * time * direction[1];
+        double y = y_ + speed * time * direction[1] + time * fall_speed;
+        bool falling = true;
         for(size_t i = 0; i < rectangles.size(); ++i) {
             double left = rectangles[i][0], right = rectangles[i][1];
             double lower = rectangles[i][2], upper = rectangles[i][3];
-            if (left <= x - image_size_.x / 2 && x + image_size_.x / 2 <= right) {
-                if (!(lower <= y - image_size_.y / 2 && y + image_size_.y / 2 <= upper)) {
-                    return false;
-                }
+            if (!(left < x - image_size_.x / 2 && x + image_size_.x / 2 < right)) {
+                direction = {0, direction[1]};
             }
-            else return false;
+            if (!(lower < y - image_size_.y / 2 && y + image_size_.y / 2 < upper)) {
+                falling = false;
+                direction = {direction[0], 0};
+            }
         }
-        return true;
+        return falling;
     }
 public:
-    object(double x, double y/*, double w, double h*/, string FILEPath){
+    object(double hp, double x, double y/*, double w, double h*/, string FILEPath){
+        hp_ = hp;
         image_.loadFromFile(FILEPath);
         texture_.loadFromImage(image_);
         sprite_.setTexture(texture_);
@@ -42,18 +47,42 @@ public:
         cout << FILEPath << ": " << image_.getSize().x << ' ' << image_.getSize().y << '\n';
         //Also we can change type of sprite(texture) based on type of img;
     }
+    void deal_damage(double damage){
+        hp_ -= damage;
+    }
+    vector<double> getRect(){
+        return {x_ - image_size_.x / 2, x_ + image_size_.x / 2, y_ - image_size_.y / 2, y_ + image_size_.y / 2};
+    }
+    bool intersects(vector<double> rectangle){
+        double left = rectangle[0], right = rectangle[1];
+        double lower = rectangle[2], upper = rectangle[3];
+        for(int i = 0; i < 2; ++i){
+            for(int j = 0; j < 2; ++j){
+                if(left <= x_ + (1 - 2 * i) * image_size_.x / 2 && x_ + (1 - 2 * i) * image_size_.x / 2 <= right){
+                    if(lower <= y_ + (1 - 2 * j) * image_size_.y / 2 && y_ + (1 - 2 * j) * image_size_.y / 2 <= upper){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     void update(double speed, double time, vector<int> direction, const vector<vector<int>>& rectangles){ // direction[0] - 0/1/-1 - direction of opbject by Ox?. Same for direction[1];
-        if(!synergy_with_map_rect(rectangles, speed, time, direction)) return;
-        x_ += speed * time * direction[0];
-        y_ += speed * time * direction[1];
-        sprite_.move(speed * time * direction[0], speed * time * direction[1]);
+        bool falling = synergy_with_map_rect(rectangles, speed, time, direction);
+        double dx = speed * time * direction[0];
+        double dy = speed * time * direction[1] + fall_speed * time * falling;
+        x_ += dx;
+        y_ += dy;
+        sprite_.move(dx, dy);
     }
     void update(double speed, double time, vector<int> direction, const vector<vector<int>>& rectangles, View& view){ // overloading with pinned view
-        if(!synergy_with_map_rect(rectangles, speed, time, direction)) return;
-        x_ += speed * time * direction[0];
-        y_ += speed * time * direction[1];
-        sprite_.move(speed * time * direction[0], speed * time * direction[1]);
-        view.move(speed * time * direction[0], speed * time * direction[1]);
+        bool falling = synergy_with_map_rect(rectangles, speed, time, direction);
+        double dx = speed * time * direction[0];
+        double dy = speed * time * direction[1] + fall_speed * time * falling;
+        x_ += dx;
+        y_ += dy;
+        sprite_.move(dx, dy);
+        view.move(dx, dy);
     }
     Sprite GetSprite(){
         return sprite_;
@@ -64,7 +93,14 @@ public:
     double get_y(){
         return y_;
     }
+    double get_hp(){
+        return hp_;
+    }
+    image_size get_size(){
+        return image_size_;
+    };
 };
+
 
 int main()
 {
@@ -112,9 +148,9 @@ int main()
     sf::Sprite mapSprite;
     mapSprite.setTexture(renderTexture.getTexture());
 
-    object ilnur(tile_w, tile_h, "images/ilnur.jpg");
-    object cat(2 * tile_w, 2 * tile_h, "images/cat.png");
-    object mouse(tile_w, tile_h, "images/mouse.png");
+    object ilnur(999, tile_w, tile_h, "images/ilnur.jpg");
+    object cat(1, 5000, 5000, "images/samir.jpg");
+    object mouse(1, tile_w, tile_h, "images/mouse_2.png");
     view.setCenter(cat.get_x(), cat.get_y());
     view_clone.setCenter(mouse.get_x(), mouse.get_y());
 
@@ -133,31 +169,45 @@ int main()
         }
         double time = clock.restart().asMicroseconds();
         time /= 1000;
+        if(mouse.intersects(cat.getRect()) || cat.intersects(mouse.getRect())){
+            cat.deal_damage(time / 1000);
+            cout << cat.get_hp() << '\n';
+            if(cat.get_hp() <= 0){
+                window_clone.close();
+                window.close();
+            }
+        }
 //        cout << time << '\n';
+        vector<int> cat_direction = {0, 0};
         if(Keyboard::isKeyPressed(Keyboard::W)){
-            cat.update(speed, time, {0, -1}, {rectangle1}, view);
+            --cat_direction[1];
         }
         if(Keyboard::isKeyPressed(Keyboard::A)){
-            cat.update(speed, time, {-1, 0}, {rectangle1}, view);
+            --cat_direction[0];
         }
         if(Keyboard::isKeyPressed(Keyboard::S)){
-            cat.update(speed, time, {0, 1}, {rectangle1}, view);
+            ++cat_direction[1];
         }
         if(Keyboard::isKeyPressed(Keyboard::D)){
-            cat.update(speed, time, {1, 0}, {rectangle1}, view);
+            ++cat_direction[0];
         }
+        cat.update(speed, time, cat_direction, {rectangle1}, view);
+        vector<int> mouse_direction = {0, 0};
         if(Keyboard::isKeyPressed(Keyboard::Up)){
-            mouse.update(speed, time, {0, -1}, {rectangle1}, view_clone);
+            --mouse_direction[1];
         }
         if(Keyboard::isKeyPressed(Keyboard::Left)){
             mouse.update(speed, time, {-1, 0}, {rectangle1}, view_clone);
+            --mouse_direction[0];
         }
         if(Keyboard::isKeyPressed(Keyboard::Down)){
-            mouse.update(speed, time, {0, 1}, {rectangle1}, view_clone);
+            ++mouse_direction[1];
         }
         if(Keyboard::isKeyPressed(Keyboard::Right)){
-            mouse.update(speed, time, {1, 0}, {rectangle1}, view_clone);
+            ++mouse_direction[0];
         }
+        mouse.update(speed, time, mouse_direction, {rectangle1}, view_clone);
+
         //drawing
         window.setView(view);
         window.clear();

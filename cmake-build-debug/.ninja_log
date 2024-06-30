@@ -1,6 +1,18 @@
 # ninja log v5
-2	809	7414411436718940	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
-810	1171	7414411440274366	GameTrain.exe	673c9ca52d7bbc26
+2	995	7414490933887905	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+995	1379	7414490937663310	GameTrain.exe	673c9ca52d7bbc26
 1	345	7407924770301716	build.ninja	a966f521822c37fe
-3	901	7414412342573793	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
-902	1262	7414412346152143	GameTrain.exe	673c9ca52d7bbc26
+3	886	7414491044033805	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+886	1255	7414491047694761	GameTrain.exe	673c9ca52d7bbc26
+3	829	7414492850338022	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+830	1226	7414492854247868	GameTrain.exe	673c9ca52d7bbc26
+3	906	7414493437271483	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+906	1277	7414493440952226	GameTrain.exe	673c9ca52d7bbc26
+3	895	7414494571464488	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+896	1269	7414494575145548	GameTrain.exe	673c9ca52d7bbc26
+3	912	7414495322694420	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+912	1279	7414495326364860	GameTrain.exe	673c9ca52d7bbc26
+3	1004	7414495511752422	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+1004	1405	7414495515698314	GameTrain.exe	673c9ca52d7bbc26
+3	919	7414497165414203	CMakeFiles/GameTrain.dir/main.cpp.obj	cacc0cf15f2e947
+919	1286	7414497169045948	GameTrain.exe	673c9ca52d7bbc26
