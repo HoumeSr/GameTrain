@@ -8,6 +8,10 @@ private:
     double x_;
     double y_;
     Image image_;
+    struct{
+        double x;
+        double y;
+    } image_size_;
     Texture texture_;
     Sprite sprite_;
     bool synergy_with_map_rect(vector<vector<int>> rectangles, double speed, double time, vector<int> direction) { // true - right, false - left(unblocked side)
@@ -16,8 +20,8 @@ private:
         for(size_t i = 0; i < rectangles.size(); ++i) {
             double left = rectangles[i][0], right = rectangles[i][1];
             double lower = rectangles[i][2], upper = rectangles[i][3];
-            if (left <= x && x <= right) {
-                if (!(lower <= y && y <= upper)) {
+            if (left <= x - image_size_.x / 2 && x + image_size_.x / 2 <= right) {
+                if (!(lower <= y - image_size_.y / 2 && y + image_size_.y / 2 <= upper)) {
                     return false;
                 }
             }
@@ -30,22 +34,25 @@ public:
         image_.loadFromFile(FILEPath);
         texture_.loadFromImage(image_);
         sprite_.setTexture(texture_);
+        image_size_.x = image_.getSize().x;
+        image_size_.y = image_.getSize().y;
+        x_ = x + image_size_.x / 2;
+        y_ = y + image_size_.y / 2;
         sprite_.setPosition(x, y);
-        x_ = x;
-        y_ = y;
+        cout << FILEPath << ": " << image_.getSize().x << ' ' << image_.getSize().y << '\n';
         //Also we can change type of sprite(texture) based on type of img;
     }
     void update(double speed, double time, vector<int> direction, const vector<vector<int>>& rectangles){ // direction[0] - 0/1/-1 - direction of opbject by Ox?. Same for direction[1];
         if(!synergy_with_map_rect(rectangles, speed, time, direction)) return;
         x_ += speed * time * direction[0];
         y_ += speed * time * direction[1];
-        sprite_.setPosition(x_, y_);
+        sprite_.move(speed * time * direction[0], speed * time * direction[1]);
     }
     void update(double speed, double time, vector<int> direction, const vector<vector<int>>& rectangles, View& view){ // overloading with pinned view
         if(!synergy_with_map_rect(rectangles, speed, time, direction)) return;
         x_ += speed * time * direction[0];
         y_ += speed * time * direction[1];
-        sprite_.setPosition(x_, y_);
+        sprite_.move(speed * time * direction[0], speed * time * direction[1]);
         view.move(speed * time * direction[0], speed * time * direction[1]);
     }
     Sprite GetSprite(){
@@ -61,12 +68,12 @@ public:
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Catch the Hilter");
-    sf::RenderWindow window_clone(sf::VideoMode(1000, 1000), "Catch the Hilter 2 player");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Catch the Hilter");
+    sf::RenderWindow window_clone(sf::VideoMode(1920, 1080), "Catch the Hilter 2 player");
 
 
     Clock clock;
-    double speed = 0.5;
+    double speed = 5;
     View view, view_clone;
     //map's sprite's rendering
     int map_w = 200, map_h = 200,  tile_w = 64, tile_h = 64;
@@ -79,10 +86,8 @@ int main()
     sf::Sprite tile_wall, tile_oth;
     tile_wall.setTexture(map_wall);
     tile_oth.setTexture(map_oth);
-    view.setSize(400,400);
-    view.setCenter(0, 0);
-    view_clone.setSize(400, 400);
-    view_clone.setCenter(0, 0);
+    view.setSize(4000,4000);
+    view_clone.setSize(4000, 4000);
     for (int i = 0; i < map_h; i++) {
         for (int j = 0; j < map_w; j++) {
             if(map[i][j] == ' '){
@@ -108,8 +113,10 @@ int main()
     mapSprite.setTexture(renderTexture.getTexture());
 
     object ilnur(tile_w, tile_h, "images/ilnur.jpg");
-    object cat(2 * tile_w, 2 * tile_h, "images/cat_s.png");
-    object mouse(tile_w, tile_h, "images/mouse_s.png");
+    object cat(2 * tile_w, 2 * tile_h, "images/cat.png");
+    object mouse(tile_w, tile_h, "images/mouse.png");
+    view.setCenter(cat.get_x(), cat.get_y());
+    view_clone.setCenter(mouse.get_x(), mouse.get_y());
 
     while (window.isOpen() || window_clone.isOpen())
     {
