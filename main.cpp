@@ -34,6 +34,17 @@ private:
         return falling;
     }
 public:
+    bool areaChecking(vector<string>& TileMap){
+        double tile_w = 64, tile_h = 64, w = image_size_.x, h = image_size_.y;
+        for(int i = ((y_ - h / 2) / tile_h); i < (y_ + h / 2) / tile_h + ((y_ + h / 2) / tile_h > static_cast<int>((y_ + h / 2) / tile_h)) ; ++i){
+            for(int j = ((x_ - w / 2) / tile_w); j < (x_ + w / 2) / tile_w + ((x_ + w / 2) / tile_w > static_cast<int>((x_ + w / 2) / tile_w)); ++j){
+                if(TileMap[i][j] == 'j'){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     object(double hp, double x, double y/*, double w, double h*/, string FILEPath){
         hp_ = hp;
         image_.loadFromFile(FILEPath);
@@ -150,7 +161,7 @@ int main()
 
     object ilnur(999, tile_w, tile_h, "images/ilnur.jpg");
     object cat(1, 5000, 5000, "images/samir.jpg");
-    object mouse(1, tile_w, tile_h, "images/mouse_2.png");
+    object mouse(1, tile_w, tile_h, "images/mouse_s.png");
     view.setCenter(cat.get_x(), cat.get_y());
     view_clone.setCenter(mouse.get_x(), mouse.get_y());
 
@@ -207,7 +218,10 @@ int main()
             ++mouse_direction[0];
         }
         mouse.update(speed, time, mouse_direction, {rectangle1}, view_clone);
-
+        if(mouse.areaChecking(map)){
+            window_clone.close();
+            window.close();
+        }
         //drawing
         window.setView(view);
         window.clear();

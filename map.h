@@ -3,7 +3,18 @@
 #include "string"
 
 using namespace std;
-
+/*
+MAP STANDART:
+Q - Левый верхний угол
+q - Правый верхний угол
+G - Левый нижний угол
+g - Правый нижний угол
+W - Верхняя стена
+w - Нижняя стена
+H - Левая стена
+h - Правая стена
+other - Остальное
+ */
 std::vector<std::string> createMap(int width, int height) {
     std::vector<std::string> map(height, std::string(width, ' '));
     for (int i = 0; i < height; ++i) {
@@ -25,7 +36,7 @@ std::vector<std::string> createMap(int width, int height) {
                 map[i][j] = 'w';
             }
             else {
-                int randNum = rand() % 52;
+                int randNum = rand() % 2452;
                 map[i][j] = (randNum != 0) ? ' ' : 'j';
             }
         }
